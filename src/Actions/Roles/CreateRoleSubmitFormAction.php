@@ -4,6 +4,7 @@ namespace Brezgalov\RightsManager\Actions\Roles;
 
 use Brezgalov\RightsManager\Pages\CreateRolePage;
 use Brezgalov\RightsManager\Views\ViewContext;
+use Brezgalov\ApiHelpers\v2\Behaviors\Action\TransactionBehavior;
 use Brezgalov\ApiHelpers\v2\Formatters\RenderOrRedirectFormatter;
 use Brezgalov\ApiHelpers\v2\RenderAction;
 use yii\helpers\Url;
@@ -34,6 +35,13 @@ class CreateRoleSubmitFormAction extends RenderAction
      * @var string
      */
     public $viewContext = ViewContext::class;
+
+    /**
+     * @var array
+     */
+    public $behaviors = [
+        TransactionBehavior::class,
+    ];
 
     /**
      * CreateRoleSubmitFormAction constructor.
