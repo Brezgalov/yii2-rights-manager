@@ -19,7 +19,8 @@ use yii\web\View;
 
 <div>
     <p>
-        <a href="<?= Url::toRoute('roles/create') ?>" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>Новая роль</a>
+        <a href="<?= Url::toRoute('roles/create') ?>" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Новая роль</a>
+        <a href="<?= Url::toRoute('constants/update-storage') ?>" class="btn btn-default"><i class="glyphicon glyphicon-th-list"></i> Обновить список констант</a>
     </p>
 </div>
 

@@ -3,7 +3,9 @@
 namespace Brezgalov\RightsManager\Services;
 
 use Brezgalov\RightsManager\RightsManagerModule;
+use Brezgalov\RightsManager\Services\ConstantsStorageService\IConstantsStorageService;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 use yii\rbac\ManagerInterface;
 
 class ConstantsConfigBuilderService extends Component
@@ -19,9 +21,9 @@ class ConstantsConfigBuilderService extends Component
     public $configFilePath;
 
     /**
-     * @var string
+     * @var IConstantsStorageService
      */
-    public $rightsManagerModuleClass = RightsManagerModule::class;
+    public $constantsStorage;
 
     /**
      * ConstantsConfigBuilderService constructor.
@@ -32,14 +34,37 @@ class ConstantsConfigBuilderService extends Component
         $this->authManager = \Yii::$app->authManager;
 
         parent::__construct($config);
+
+        if (empty($this->constantsStorage)) {
+            $this->constantsStorage = RightsManagerModule::getConstantsStorageServiceConfig();
+        }
+
+        if (empty($this->constantsStorage)) {
+            throw new InvalidConfigException('constantsStorage should be set');
+        }
     }
 
+    /**
+     * @return IConstantsStorageService
+     * @throws InvalidConfigException
+     */
+    public function getConstantsStorage()
+    {
+        if ($this->constantsStorage instanceof IConstantsStorageService) {
+            return $this->constantsStorage;
+        }
+
+        return \Yii::createObject($this->constantsStorage);
+    }
+
+    /**
+     * @return bool
+     * @throws InvalidConfigException
+     */
     public function buildConfigFile()
     {
-        $moduleClass = $this->rightsManagerModuleClass;
+        $roles = $this->authManager->getRoles();
 
-        $configPath = $this->configFilePath ?: $moduleClass::$constantsStaticConfigPath;
-
-        $a = 1;
+        return true;
     }
 }

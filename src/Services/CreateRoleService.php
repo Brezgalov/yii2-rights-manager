@@ -2,6 +2,9 @@
 
 namespace Brezgalov\RightsManager\Services;
 
+use Brezgalov\RightsManager\RightsManagerModule;
+use Brezgalov\RightsManager\Services\ConstantsStorageService\FileConstantsStorage;
+use Brezgalov\RightsManager\Services\ConstantsStorageService\IConstantsStorageService;
 use Brezgalov\ApiHelpers\v2\IRegisterInputInterface;
 use yii\base\Model;
 use yii\rbac\ManagerInterface;
@@ -24,14 +27,30 @@ class CreateRoleService extends Model implements IRegisterInputInterface
     public $authManager;
 
     /**
+     * @var string|array|IConstantsStorageService|bool
+     */
+    public $constantsStorage;
+
+    /**
      * CreateRoleService constructor.
      * @param array $config
+     * @throws \yii\base\InvalidConfigException
      */
     public function __construct($config = [])
     {
         $this->authManager = \Yii::$app->authManager;
 
         parent::__construct($config);
+
+        if (is_null($this->constantsStorage)) {
+            $storeConf = RightsManagerModule::getConstantsStorageServiceConfig();
+
+            if ($storeConf) {
+                $this->constantsStorage = \Yii::createObject($storeConf);
+            } else {
+                $this->constantsStorage = new FileConstantsStorage();
+            }
+        }
     }
 
     /**
@@ -62,6 +81,10 @@ class CreateRoleService extends Model implements IRegisterInputInterface
      */
     public function createRole()
     {
+        if (!$this->validate()) {
+            return false;
+        }
+
         $role = $this->authManager->createRole(
             mb_strtolower($this->roleName)
         );
@@ -71,6 +94,14 @@ class CreateRoleService extends Model implements IRegisterInputInterface
         if (!$this->authManager->add($role)) {
             $this->addError('roleName', 'Не удается добавить роль в систему');
             return false;
+        }
+
+        if ($this->constantsStorage) {
+            $this->constantsStorage->loadCurrentData($this->authManager);
+            if (!$this->constantsStorage->flush()) {
+                $this->addError('roleName', 'Не удается записать RBAC константы');
+                return false;
+            }
         }
 
         return true;

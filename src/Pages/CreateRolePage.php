@@ -2,6 +2,7 @@
 
 namespace Brezgalov\RightsManager\Pages;
 
+use Brezgalov\RightsManager\Services\ConstantsConfigBuilderService;
 use Brezgalov\RightsManager\Services\CreateRoleService;
 use Brezgalov\ApiHelpers\v2\DTO\IRenderFormatterDTO;
 use Brezgalov\ApiHelpers\v2\IRegisterInputInterface;
@@ -65,7 +66,7 @@ class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInpu
      * @return $this
      * @throws \Exception
      */
-    public function submitRole()
+    public function submitRole(ConstantsConfigBuilderService $constantsBuilder = null)
     {
         if (!$this->createRoleService->validate()) {
             $this->addErrors($this->createRoleService->getErrors());
@@ -74,6 +75,15 @@ class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInpu
 
         if (!$this->createRoleService->createRole()) {
             $this->addErrors($this->createRoleService->getErrors());
+            return $this;
+        }
+
+        if (empty($constantsBuilder)) {
+            $constantsBuilder = new ConstantsConfigBuilderService();
+        }
+
+        if (!$constantsBuilder->buildConfigFile()) {
+            $this->addErrors($constantsBuilder->getErrors());
             return $this;
         }
 
