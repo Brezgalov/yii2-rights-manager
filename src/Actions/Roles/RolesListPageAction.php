@@ -2,7 +2,7 @@
 
 namespace Brezgalov\RightsManager\Actions\Roles;
 
-use Brezgalov\RightsManager\Pages\RolesListPage;
+use Brezgalov\RightsManager\Pages\Roles\RolesListPage;
 use Brezgalov\RightsManager\Views\ViewContext;
 use Brezgalov\ApiHelpers\v2\RenderAction;
 

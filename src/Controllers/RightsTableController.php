@@ -2,10 +2,10 @@
 
 namespace Brezgalov\RightsManager\Controllers;
 
-use Brezgalov\RightsManager\Actions\Constants\UpdateStorageAction;
+use Brezgalov\RightsManager\Actions\RightsTable\IndexAction;
 use yii\web\Controller;
 
-class ConstantsController extends Controller
+class RightsTableController extends Controller
 {
     /**
      * @return array
@@ -13,7 +13,7 @@ class ConstantsController extends Controller
     public function actions()
     {
         return [
-            'update-storage' => UpdateStorageAction::class,
+            'index' => IndexAction::class,
         ];
     }
 }

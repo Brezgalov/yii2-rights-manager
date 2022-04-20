@@ -1,6 +1,6 @@
 <?php
 
-namespace Brezgalov\RightsManager\Pages;
+namespace Brezgalov\RightsManager\Pages\Roles;
 
 use Brezgalov\ApiHelpers\v2\DTO\IRenderFormatterDTO;
 use yii\base\Component;

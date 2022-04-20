@@ -1,6 +1,6 @@
 <?php
 
-namespace Brezgalov\RightsManager\Pages;
+namespace Brezgalov\RightsManager\Pages\Roles;
 
 use Brezgalov\RightsManager\Services\ConstantsConfigBuilderService;
 use Brezgalov\RightsManager\Services\CreateRoleService;
