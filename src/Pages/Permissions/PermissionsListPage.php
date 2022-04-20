@@ -1,17 +1,17 @@
 <?php
 
-namespace Brezgalov\RightsManager\Pages\Roles;
+namespace Brezgalov\RightsManager\Pages\Permissions;
 
 use Brezgalov\ApiHelpers\v2\DTO\IRenderFormatterDTO;
 use kartik\grid\ActionColumn;
 use kartik\grid\EditableColumn;
-use yii\base\Component;
+use yii\base\Model;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Url;
 use yii\rbac\ManagerInterface;
-use yii\rbac\Role;
+use yii\rbac\Permission;
 
-class RolesListPage extends Component implements IRenderFormatterDTO
+class PermissionsListPage extends Model implements IRenderFormatterDTO
 {
     const PAGE_PREPARE_METHOD = 'preparePageData';
 
@@ -23,12 +23,7 @@ class RolesListPage extends Component implements IRenderFormatterDTO
     /**
      * @var ArrayDataProvider
      */
-    public $rolesDataProvider;
-
-    /**
-     * @var array
-     */
-    public $gridViewColumns;
+    public $permissionsDataProvider;
 
     /**
      * @var string
@@ -38,20 +33,20 @@ class RolesListPage extends Component implements IRenderFormatterDTO
     /**
      * @var string
      */
-    public $createPageRoute = 'roles/create';
+    public $createPageRoute = 'permissions/create';
 
     /**
      * @var string
      */
-    public $updatePageRoute = 'roles/update';
+    public $updatePageRoute = 'permissions/update';
 
     /**
-     * @var string
+     * @var array
      */
-    public $updateConstantsRoute = '';
+    public $gridViewColumns;
 
     /**
-     * RolesListPage constructor.
+     * PermissionsListPage constructor.
      * @param array $config
      */
     public function __construct($config = [])
@@ -62,33 +57,29 @@ class RolesListPage extends Component implements IRenderFormatterDTO
             $this->authManager = \Yii::$app->authManager;
         }
 
-        if (empty($this->rolesDataProvider)) {
-            $this->rolesDataProvider = new ArrayDataProvider(['pagination' => false]);
+        if (empty($this->permissionsDataProvider)) {
+            $this->permissionsDataProvider = new ArrayDataProvider(['pagination' => false]);
         }
     }
 
     /**
-     * @return $this
-     */
-    public function preparePageData()
-    {
-        $this->rolesDataProvider->models = $this->authManager->getRoles();
-
-        return $this;
-    }
-
-    /**
-     * @return array
+     * @return ArrayDataProvider[]
      */
     public function getViewParams()
     {
         return [
-            'rolesDataProvider' => $this->rolesDataProvider,
+            'permissionsDataProvider' => $this->permissionsDataProvider,
             'gridViewColumns' => $this->getColumns(),
             'gridLayout' => $this->gridLayout,
             'createPageRoute' => $this->createPageRoute,
-            'updateConstantsRoute' => $this->updateConstantsRoute,
         ];
+    }
+
+    public function preparePageData()
+    {
+        $this->permissionsDataProvider->models = $this->authManager->getPermissions();
+
+        return $this;
     }
 
     /**
@@ -114,8 +105,8 @@ class RolesListPage extends Component implements IRenderFormatterDTO
                 'class' => EditableColumn::class,
                 'attribute' => 'description',
                 'label' => 'Описание',
-                'value' => function(Role $role) {
-                    return $role->description ?: '';
+                'value' => function(Permission $permission) {
+                    return $permission->description ?: '';
                 },
                 'editableOptions' => [
                     'name' => 'description',
@@ -125,15 +116,15 @@ class RolesListPage extends Component implements IRenderFormatterDTO
             [
                 'attribute' => 'createdAt',
                 'label' => 'Дата создания',
-                'value' => function(Role $role) {
-                    return $role->createdAt ? date('d.m.Y H:i:s', $role->createdAt) : null;
+                'value' => function(Permission $permission) {
+                    return $permission->createdAt ? date('d.m.Y H:i:s', $permission->createdAt) : null;
                 }
             ],
             [
                 'attribute' => 'updatedAt',
                 'label' => 'Дата редактирования',
-                'value' => function(Role $role) {
-                    return $role->updatedAt ? date('d.m.Y H:i:s', $role->updatedAt) : null;
+                'value' => function(Permission $permission) {
+                    return $permission->updatedAt ? date('d.m.Y H:i:s', $permission->updatedAt) : null;
                 }
             ],
             [

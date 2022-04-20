@@ -49,6 +49,10 @@ $year = date('Y');
                 'label' => 'Роли',
                 'url' => Url::toRoute('roles/list'),
             ],
+            [
+                'label' => 'Разрешения',
+                'url' => Url::toRoute('permissions/list'),
+            ]
         ],
     ]) ?>
 
