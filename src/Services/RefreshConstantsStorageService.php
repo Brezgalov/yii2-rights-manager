@@ -29,16 +29,20 @@ class RefreshConstantsStorageService extends Model
      */
     public function __construct($config = [])
     {
-        $constServiceConfig = RightsManagerModule::getConstantsStorageServiceConfig();
-        if (empty($constServiceConfig)) {
-            throw new InvalidConfigException('constantsStorageService should be set');
+        parent::__construct($config);
+
+        if (empty($this->authManager)) {
+            $this->authManager = \Yii::$app->authManager;
         }
 
-        $this->constantsStorage = \Yii::createObject($constServiceConfig);
+        if (empty($this->constantsStorage)) {
+            $constServiceConfig = RightsManagerModule::getConstantsStorageServiceConfig();
+            if (empty($constServiceConfig)) {
+                throw new InvalidConfigException('constantsStorageService should be set');
+            }
 
-        $this->authManager = \Yii::$app->authManager;
-
-        parent::__construct($config);
+            $this->constantsStorage = \Yii::createObject($constServiceConfig);
+        }
     }
 
     /**

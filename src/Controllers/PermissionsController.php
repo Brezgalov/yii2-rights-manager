@@ -13,7 +13,7 @@ class PermissionsController extends Controller
     public function actions()
     {
         return [
-            'list' => PermissionsListPageAction::class,
+            'index' => PermissionsListPageAction::class,
         ];
     }
 }

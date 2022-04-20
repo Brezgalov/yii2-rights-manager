@@ -29,9 +29,11 @@ class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInpu
      */
     public function __construct($config = [])
     {
-        $this->createRoleService = new CreateRoleService();
-
         parent::__construct($config);
+
+        if (empty($this->createRoleService)) {
+            $this->createRoleService = new CreateRoleService();
+        }
     }
 
     /**
@@ -40,7 +42,7 @@ class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInpu
      */
     public function registerInput(array $data = [])
     {
-        return $this->createRoleService->registerInput($data);
+        return $this->createRoleService->load($data);
     }
 
     /**

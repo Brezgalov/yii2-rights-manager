@@ -15,7 +15,7 @@ class RolesController extends Controller
     public function actions()
     {
         return [
-            'list' => RolesListPageAction::class,
+            'index' => RolesListPageAction::class,
             'create' => CreateRolePageAction::class,
             'create-submit' => CreateRoleSubmitFormAction::class,
         ];

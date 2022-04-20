@@ -5,25 +5,31 @@ namespace Brezgalov\RightsManager\Services;
 use Brezgalov\RightsManager\RightsManagerModule;
 use Brezgalov\RightsManager\Services\ConstantsStorageService\FileConstantsStorage;
 use Brezgalov\RightsManager\Services\ConstantsStorageService\IConstantsStorageService;
+use Brezgalov\ApiHelpers\v2\IRegisterInputInterface;
 use yii\base\Model;
 use yii\rbac\ManagerInterface;
 
-class CreateRoleService extends Model
+class CreatePermissionService extends Model
 {
-    /**
-     * @var string
-     */
-    public $roleName;
-
-    /**
-     * @var string
-     */
-    public $roleDescription;
-
     /**
      * @var ManagerInterface
      */
     public $authManager;
+
+    /**
+     * @var string
+     */
+    public $permissionName;
+
+    /**
+     * @var string
+     */
+    public $permissionDescription;
+
+    /**
+     * @var string
+     */
+    public $ruleName;
 
     /**
      * @var string|array|IConstantsStorageService|bool
@@ -31,9 +37,8 @@ class CreateRoleService extends Model
     public $constantsStorage;
 
     /**
-     * CreateRoleService constructor.
+     * CreatePermissionService constructor.
      * @param array $config
-     * @throws \yii\base\InvalidConfigException
      */
     public function __construct($config = [])
     {
@@ -60,29 +65,32 @@ class CreateRoleService extends Model
     public function rules()
     {
         return [
-            [['roleName'], 'required'],
-            [['roleDescription'], 'string'],
+            [['permissionName'], 'required'],
+            [['permissionDescription', 'ruleName'], 'string'],
         ];
     }
 
-    /**
-     * @return bool
-     * @throws \Exception
-     */
-    public function createRole()
+    public function createPermission()
     {
         if (!$this->validate()) {
             return false;
         }
 
-        $role = $this->authManager->createRole(
-            mb_strtolower($this->roleName)
-        );
+        $permission = $this->authManager->createPermission($this->permissionName);
+        $permission->description = $this->permissionDescription;
 
-        $role->description = $this->roleDescription;
+        if ($this->ruleName) {
+            $rule = $this->authManager->getRule($this->ruleName);
+            if (empty($rule)) {
+                $this->addError('ruleName', 'Указано не существующее правило');
+                return false;
+            }
 
-        if (!$this->authManager->add($role)) {
-            $this->addError('roleName', 'Не удается добавить роль в систему');
+            $permission->ruleName = $this->ruleName;
+        }
+
+        if (!$this->authManager->add($permission)) {
+            $this->addError('name', 'Не удается добавить роль в систему');
             return false;
         }
 

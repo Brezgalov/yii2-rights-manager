@@ -31,9 +31,11 @@ class ConstantsConfigBuilderService extends Component
      */
     public function __construct($config = [])
     {
-        $this->authManager = \Yii::$app->authManager;
-
         parent::__construct($config);
+
+        if (empty($this->authManager)) {
+            $this->authManager = \Yii::$app->authManager;
+        }
 
         if (empty($this->constantsStorage)) {
             $this->constantsStorage = RightsManagerModule::getConstantsStorageServiceConfig();
