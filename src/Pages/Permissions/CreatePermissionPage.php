@@ -7,10 +7,15 @@ use Brezgalov\RightsManager\Services\CreatePermissionService;
 use Brezgalov\ApiHelpers\v2\DTO\IRenderFormatterDTO;
 use Brezgalov\ApiHelpers\v2\IRegisterInputInterface;
 use yii\base\Model;
+use yii\db\Exception;
 use yii\rbac\ManagerInterface;
+use yii\rbac\Rule;
 
 class CreatePermissionPage extends Model implements IRegisterInputInterface, IRenderFormatterDTO
 {
+    const PAGE_PREPARE_METHOD = 'preparePageData';
+    const SUBMIT_PERMISSION_METHOD = 'submitPermission';
+
     /**
      * @var string
      */
@@ -27,7 +32,12 @@ class CreatePermissionPage extends Model implements IRegisterInputInterface, IRe
     public $authManager;
 
     /**
-     * @var array
+     * @var bool
+     */
+    public $refreshConstants = false;
+
+    /**
+     * @var string[]
      */
     protected $rulesList = [];
 
@@ -54,6 +64,8 @@ class CreatePermissionPage extends Model implements IRegisterInputInterface, IRe
      */
     public function registerInput(array $data = [])
     {
+        $this->refreshConstants = $data['refreshConstants'] ?? $this->refreshConstants;
+
         $this->createPermissionService->load($data);
 
         return true;
@@ -68,6 +80,7 @@ class CreatePermissionPage extends Model implements IRegisterInputInterface, IRe
             'createPermissionService' => $this->createPermissionService,
             'rulesList' => $this->rulesList,
             'submitFormUrl' => $this->submitFormUrl,
+            'refreshConstants' => (bool)$this->refreshConstants,
         ];
     }
 
@@ -76,7 +89,9 @@ class CreatePermissionPage extends Model implements IRegisterInputInterface, IRe
      */
     public function preparePageData()
     {
-        // @todo: подготовить данные
+        foreach ($this->authManager->getRules() as $rule) {
+            $this->rulesList[$rule->name] = $rule->name;
+        }
 
         return $this;
     }
@@ -87,6 +102,29 @@ class CreatePermissionPage extends Model implements IRegisterInputInterface, IRe
      */
     public function submitPermission(ConstantsConfigBuilderService $constantsBuilder = null)
     {
-        // @todo: записать разрешение
+        $this->preparePageData();
+
+        if (!$this->createPermissionService->validate()) {
+            $this->addErrors($this->createPermissionService->getErrors());
+            return $this;
+        }
+
+        if (!$this->createPermissionService->createPermission()) {
+            $this->addErrors($this->createPermissionService->getErrors());
+            return $this;
+        }
+
+        if ($this->refreshConstants) {
+            if (empty($constantsBuilder)) {
+                $constantsBuilder = new ConstantsConfigBuilderService();
+            }
+
+            if (!$constantsBuilder->buildConfigFile()) {
+                $this->createPermissionService->addError('permissionName', 'Не удается обновить список констант');
+                return $this;
+            }
+        }
+
+        return $this;
     }
 }

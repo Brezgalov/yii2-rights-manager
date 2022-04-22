@@ -1,40 +1,40 @@
 <?php
 
-namespace Brezgalov\RightsManager\Actions\Roles;
+namespace Brezgalov\RightsManager\Actions\Permissions;
 
-use Brezgalov\RightsManager\Pages\Roles\CreateRolePage;
+use Brezgalov\RightsManager\Pages\Permissions\CreatePermissionPage;
 use Brezgalov\RightsManager\Views\ViewContext;
 use Brezgalov\ApiHelpers\v2\Behaviors\Action\TransactionBehavior;
 use Brezgalov\ApiHelpers\v2\Formatters\RenderOrRedirectFormatter;
 use Brezgalov\ApiHelpers\v2\RenderAction;
 use yii\helpers\Url;
 
-class CreateRoleSubmitFormAction extends RenderAction
+class CreatePermissionSubmitFormAction extends RenderAction
 {
     /**
      * @var string
      */
-    public $service = CreateRolePage::class;
+    public $service = CreatePermissionPage::class;
 
     /**
      * @var string
      */
-    public $methodName = CreateRolePage::SUBMIT_ROLE_METHOD;
+    public $methodName = CreatePermissionPage::SUBMIT_PERMISSION_METHOD;
 
     /**
      * @var string
      */
-    public $title = 'Добавить новую роль';
+    public $title = 'Добавить новое разрешение';
 
     /**
      * @var string
      */
-    public $view = 'Roles/Create';
+    public $view = 'Permissions/Create';
 
     /**
      * @var string
      */
-    public $successRedirectRoute = 'roles/';
+    public $successRedirectRoute = 'permissions/';
 
     /**
      * @var string

@@ -41,6 +41,11 @@ class PermissionsListPage extends Model implements IRenderFormatterDTO
     public $updatePageRoute = 'permissions/update';
 
     /**
+     * @var string
+     */
+    public $updateConstantsRoute = 'constants/update-storage/';
+
+    /**
      * @var array
      */
     public $gridViewColumns;
@@ -72,6 +77,7 @@ class PermissionsListPage extends Model implements IRenderFormatterDTO
             'gridViewColumns' => $this->getColumns(),
             'gridLayout' => $this->gridLayout,
             'createPageRoute' => $this->createPageRoute,
+            'updateConstantsRoute' => $this->updateConstantsRoute,
         ];
     }
 

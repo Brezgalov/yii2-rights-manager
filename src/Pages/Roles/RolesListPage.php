@@ -48,7 +48,7 @@ class RolesListPage extends Component implements IRenderFormatterDTO
     /**
      * @var string
      */
-    public $updateConstantsRoute = '';
+    public $updateConstantsRoute = 'constants/update-storage/';
 
     /**
      * RolesListPage constructor.

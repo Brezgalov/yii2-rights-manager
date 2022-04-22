@@ -10,6 +10,7 @@ use yii\widgets\ActiveForm;
  * @var CreateRoleService $createRoleService
  * @var string $submitFormUrl
  * @var View $this
+ * @var bool $refreshConstants
  */
 
 ?>
@@ -25,6 +26,11 @@ use yii\widgets\ActiveForm;
     <?= $form->field($createRoleService, 'roleName')->label('Название / Код роли') ?>
 
     <?= $form->field($createRoleService, 'roleDescription')->label('Описание') ?>
+
+    <div class="form-group">
+        <?= Html::checkbox('refreshConstants', $refreshConstants, ['id' => 'refresh-constants-checkbox']) ?>
+        <label class="form-label" for="refresh-constants-checkbox">Обновить константы</label>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton('Создать', ['class' => 'btn btn-primary']) ?>

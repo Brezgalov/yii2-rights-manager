@@ -11,6 +11,7 @@ use yii\web\View;
  * @var string $gridViewColumns
  * @var string $gridLayout
  * @var string $createPageRoute
+ * @var string $updateConstantsRoute
  */
 
 ?>
@@ -21,6 +22,7 @@ use yii\web\View;
 <div>
     <p>
         <a href="<?= Url::toRoute($createPageRoute) ?>" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Новое разрешение</a>
+        <a href="<?= Url::toRoute($updateConstantsRoute) ?>" class="btn btn-default"><i class="glyphicon glyphicon-repeat"></i> Обновить список констант</a>
     </p>
 </div>
 

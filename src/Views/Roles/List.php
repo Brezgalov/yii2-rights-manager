@@ -22,7 +22,7 @@ use yii\web\View;
 <div>
     <p>
         <a href="<?= Url::toRoute($createPageRoute) ?>" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Новая роль</a>
-        <a href="<?= Url::toRoute($updateConstantsRoute) ?>" class="btn btn-default"><i class="glyphicon glyphicon-th-list"></i> Обновить список констант</a>
+        <a href="<?= Url::toRoute($updateConstantsRoute) ?>" class="btn btn-default"><i class="glyphicon glyphicon-repeat"></i> Обновить список констант</a>
     </p>
 </div>
 

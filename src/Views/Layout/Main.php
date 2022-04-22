@@ -47,12 +47,16 @@ $year = date('Y');
             ],
             [
                 'label' => 'Роли',
-                'url' => Url::toRoute('roles'),
+                'url' => Url::toRoute('roles/'),
             ],
             [
                 'label' => 'Разрешения',
-                'url' => Url::toRoute('permissions'),
-            ]
+                'url' => Url::toRoute('permissions/'),
+            ],
+            [
+                'label' => 'Таблица ролей / разрешений',
+                'url' => Url::toRoute('rights-table/'),
+            ],
         ],
     ]) ?>
 
