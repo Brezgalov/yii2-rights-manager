@@ -4,12 +4,9 @@ namespace Brezgalov\RightsManager\Actions\Roles;
 
 use Brezgalov\RightsManager\Pages\Roles\CreateRolePage;
 use Brezgalov\RightsManager\Views\ViewContext;
-use Brezgalov\ApiHelpers\v2\Behaviors\Action\TransactionBehavior;
-use Brezgalov\ApiHelpers\v2\Formatters\RenderOrRedirectFormatter;
-use Brezgalov\ApiHelpers\v2\RenderAction;
-use yii\helpers\Url;
+use Brezgalov\ApiHelpers\v2\SubmitRenderAction;
 
-class CreateRoleSubmitFormAction extends RenderAction
+class CreateRoleSubmitFormAction extends SubmitRenderAction
 {
     /**
      * @var string
@@ -40,27 +37,4 @@ class CreateRoleSubmitFormAction extends RenderAction
      * @var string
      */
     public $viewContext = ViewContext::class;
-
-    /**
-     * @var array
-     */
-    public $behaviors = [
-        TransactionBehavior::class,
-    ];
-
-    /**
-     * CreateRoleSubmitFormAction constructor.
-     * @param $id
-     * @param $controller
-     * @param array $config
-     */
-    public function __construct($id, $controller, $config = [])
-    {
-        $this->formatter = [
-            'class' => RenderOrRedirectFormatter::class,
-            'redirectUrl' => Url::toRoute($this->successRedirectRoute),
-        ];
-
-        parent::__construct($id, $controller, $config);
-    }
 }

@@ -15,7 +15,7 @@
     "kartik-v/yii2-grid": "dev-master",
     "kartik-v/yii2-editable": "dev-master",
     "brezgalov/yii2-modules": "^1.0.4",
-    "brezgalov/yii2-api-helpers": "@dev"
+    "brezgalov/yii2-api-helpers": "^2.0.1"
   },
   "autoload": {
     "psr-4": {

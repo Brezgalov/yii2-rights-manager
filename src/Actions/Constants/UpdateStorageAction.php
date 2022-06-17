@@ -3,10 +3,10 @@
 namespace Brezgalov\RightsManager\Actions\Constants;
 
 use Brezgalov\RightsManager\Services\RefreshConstantsStorageService;
-use Brezgalov\ApiHelpers\v2\Action;
+use Brezgalov\ApiHelpers\v2\ApiPostAction;
 use Brezgalov\ApiHelpers\v2\Formatters\RedirectBackFormatter;
 
-class UpdateStorageAction extends Action
+class UpdateStorageAction extends ApiPostAction
 {
     /**
      * @var string
