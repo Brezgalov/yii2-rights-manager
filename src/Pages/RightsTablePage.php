@@ -4,11 +4,14 @@ namespace Brezgalov\RightsManager\Pages;
 
 use Brezgalov\RightsManager\Dto\RightsTableDto;
 use Brezgalov\RightsManager\Factories\RightsTableFactory;
+use Brezgalov\RightsManager\Services\SubmitRightsTableService;
 use Brezgalov\ApiHelpers\v2\DTO\IRenderFormatterDTO;
+use Brezgalov\ApiHelpers\v2\IRegisterInputInterface;
 use yii\base\Model;
+use yii\helpers\ArrayHelper;
 use yii\rbac\ManagerInterface;
 
-class RightsTablePage extends Model implements IRenderFormatterDTO
+class RightsTablePage extends Model implements IRenderFormatterDTO, IRegisterInputInterface
 {
     const PAGE_PREPARE_METHOD = 'preparePageData';
     const SUBMIT_TABLE_METHOD = 'submitTable';
@@ -27,6 +30,11 @@ class RightsTablePage extends Model implements IRenderFormatterDTO
      * @var RightsTableFactory
      */
     public $rightsTableFactory;
+
+    /**
+     * @var SubmitRightsTableService
+     */
+    public $submitRightsService;
 
     /**
      * @var ManagerInterface
@@ -48,6 +56,33 @@ class RightsTablePage extends Model implements IRenderFormatterDTO
         if (empty($this->rightsTableFactory)) {
             $this->rightsTableFactory = new RightsTableFactory(['authManager' => $this->authManager]);
         }
+
+        if (empty($this->submitRightsService)) {
+            $this->submitRightsService = new SubmitRightsTableService(['authManager' => $this->authManager]);
+        }
+    }
+
+    /**
+     * @return RightsTableDto[]
+     */
+    public function getViewParams()
+    {
+        return [
+            'submitRoute' => $this->submitTableRoute,
+            'tableDto' => $this->tableDto,
+            'tableErrors' => $this->submitRightsService->getErrorSummary(true),
+        ];
+    }
+
+    /**
+     * @param array $data
+     * @return bool
+     */
+    public function registerInput(array $data = [])
+    {
+        $this->submitRightsService->registerInput($data);
+
+        return true;
     }
 
     /**
@@ -61,13 +96,17 @@ class RightsTablePage extends Model implements IRenderFormatterDTO
     }
 
     /**
-     * @return RightsTableDto[]
+     * @return $this
+     * @throws \yii\base\Exception
      */
-    public function getViewParams()
+    public function submitTable()
     {
-        return [
-            'submitRoute' => $this->submitTableRoute,
-            'tableDto' => $this->tableDto,
-        ];
+        if (!$this->submitRightsService->submitTable()) {
+            $this->addErrors(
+                $this->submitRightsService->getErrors()
+            );
+        }
+
+        return $this;
     }
 }

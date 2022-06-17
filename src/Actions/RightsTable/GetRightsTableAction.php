@@ -6,7 +6,7 @@ use Brezgalov\RightsManager\Pages\RightsTablePage;
 use Brezgalov\RightsManager\Views\ViewContext;
 use Brezgalov\ApiHelpers\v2\RenderAction;
 
-class IndexAction extends RenderAction
+class GetRightsTableAction extends RenderAction
 {
     /**
      * @var string

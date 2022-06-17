@@ -9,12 +9,22 @@ use yii\helpers\Url;
 /* @var View $this */
 /* @var RightsTableDto $tableDto */
 /* @var string $submitRoute */
+/* @var array $tableErrors */
 
 $rolesCount = $tableDto ? count($tableDto->roles) : 0;
 
 ?>
 
 <h2><?= $this->title ?></h2>
+
+<?php if (!empty($tableErrors)): ?>
+    <div class="alert alert-danger" role="alert">
+        <?php foreach ($tableErrors as $tableError): ?>
+            <p><?= $tableErrors ?></p>
+        <?php endforeach ?>
+    </div>
+<?php endif; ?>
+
 <?php if (empty($tableDto)): ?>
     <p>Не найдено информации для отображения</p>
 <?php else: ?>

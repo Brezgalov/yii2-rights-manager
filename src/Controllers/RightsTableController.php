@@ -2,7 +2,8 @@
 
 namespace Brezgalov\RightsManager\Controllers;
 
-use Brezgalov\RightsManager\Actions\RightsTable\IndexAction;
+use Brezgalov\RightsManager\Actions\RightsTable\GetRightsTableAction;
+use Brezgalov\RightsManager\Actions\RightsTable\SubmitRightsTableAction;
 use yii\web\Controller;
 
 class RightsTableController extends Controller
@@ -13,7 +14,8 @@ class RightsTableController extends Controller
     public function actions()
     {
         return [
-            'index' => IndexAction::class,
+            'index' => GetRightsTableAction::class,
+            'submit' => SubmitRightsTableAction::class,
         ];
     }
 }
