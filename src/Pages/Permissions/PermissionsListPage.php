@@ -81,6 +81,9 @@ class PermissionsListPage extends Model implements IRenderFormatterDTO
         ];
     }
 
+    /**
+     * @return $this
+     */
     public function preparePageData()
     {
         $this->permissionsDataProvider->models = $this->authManager->getPermissions();
@@ -137,6 +140,9 @@ class PermissionsListPage extends Model implements IRenderFormatterDTO
                 'class' => ActionColumn::class,
                 'header' => '',
                 'template' => '{delete}',
+                'deleteOptions' => [
+                    'data-pjax' => '1',
+                ],
             ],
         ];
     }

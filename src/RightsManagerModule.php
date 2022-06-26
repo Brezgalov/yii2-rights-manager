@@ -3,8 +3,10 @@
 namespace Brezgalov\RightsManager;
 
 use Brezgalov\RightsManager\Services\ConstantsStorageService\FileConstantsStorage;
+use Brezgalov\RightsManager\Views\ViewContext;
 use brezgalov\modules\Module;
 use yii\base\InvalidConfigException;
+use yii\base\ViewContextInterface;
 
 class RightsManagerModule extends Module
 {
@@ -45,6 +47,12 @@ class RightsManagerModule extends Module
     public $constantsStorageService = FileConstantsStorage::class;
 
     /**
+     * setup for ViewContextInterface
+     * @var string|array
+     */
+    public $viewContext = ViewContext::class;
+
+    /**
      * @return string
      */
     public static function getConstantsFileConfigPath()
@@ -65,6 +73,10 @@ class RightsManagerModule extends Module
      */
     public function init()
     {
+        /** @var ViewContextInterface $viewContext */
+        $viewContext = \Yii::createObject($this->viewContext);
+        $this->viewPath = $viewContext->getViewPath();
+
         static::$constantsStaticConfigPath = $this->constantsConfigPath;
         static::$constantsStorageServiceConfigStatic = $this->constantsStorageService;
 

@@ -9,14 +9,6 @@ use Brezgalov\ApiHelpers\v2\Formatters\RestFormatter;
 class UpdateRoleAttributeAction extends ApiPostAction
 {
     /**
-     * @var array
-     */
-    public $service = [
-        'class' => UpdateAuthItemAttributeService::class,
-        'mode' => UpdateAuthItemAttributeService::ROLE_MODE,
-    ];
-
-    /**
      * @var string
      */
     public $methodName = UpdateAuthItemAttributeService::MAIN_METHOD;
@@ -25,4 +17,20 @@ class UpdateRoleAttributeAction extends ApiPostAction
      * @var string
      */
     public $formatter = RestFormatter::class;
+
+    /**
+     * UpdateRoleAttributeAction constructor.
+     * @param $id
+     * @param $controller
+     * @param array $config
+     */
+    public function __construct($id, $controller, $config = [])
+    {
+        $this->service = [
+            'class' => UpdateAuthItemAttributeService::class,
+            'mode' => UpdateAuthItemAttributeService::getRoleMode(),
+        ];
+
+        parent::__construct($id, $controller, $config);
+    }
 }

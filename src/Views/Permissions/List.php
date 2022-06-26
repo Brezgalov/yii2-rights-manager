@@ -1,9 +1,11 @@
 <?php
 
+use Brezgalov\RightsManager\Views\ViewContext;
 use kartik\grid\GridView;
 use yii\helpers\Url;
 use yii\data\ArrayDataProvider;
 use yii\web\View;
+use yii\widgets\Pjax;
 
 /**
  * @var View $this
@@ -26,8 +28,12 @@ use yii\web\View;
     </p>
 </div>
 
-<?= GridView::widget([
-    'dataProvider' => $permissionsDataProvider,
-    'layout' => $gridLayout,
-    'columns' => $gridViewColumns,
+<?php Pjax::begin() ?>
+
+<?= $this->render('/Permissions/List/GridView', [
+    'permissionsDataProvider' => $permissionsDataProvider,
+    'gridLayout' => $gridLayout,
+    'gridViewColumns' => $gridViewColumns,
 ]) ?>
+
+<?php Pjax::end() ?>
