@@ -4,6 +4,7 @@ use kartik\grid\GridView;
 use yii\helpers\Url;
 use yii\data\ArrayDataProvider;
 use yii\web\View;
+use yii\widgets\Pjax;
 
 /**
  * @var View $this
@@ -26,8 +27,12 @@ use yii\web\View;
     </p>
 </div>
 
-<?= GridView::widget([
-    'dataProvider' => $rolesDataProvider,
-    'layout' => $gridLayout,
-    'columns' => $gridViewColumns,
-]) ?>
+<?php Pjax::begin() ?>
+
+<?= $this->render('/Roles/List/GridView', [
+    'rolesDataProvider' => $rolesDataProvider,
+    'gridLayout' => $gridLayout,
+    'gridViewColumns' => $gridViewColumns,
+]); ?>
+
+<?php Pjax::end() ?>

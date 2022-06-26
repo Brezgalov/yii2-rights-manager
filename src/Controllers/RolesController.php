@@ -4,6 +4,7 @@ namespace Brezgalov\RightsManager\Controllers;
 
 use Brezgalov\RightsManager\Actions\Roles\CreateRolePageAction;
 use Brezgalov\RightsManager\Actions\Roles\CreateRoleSubmitFormAction;
+use Brezgalov\RightsManager\Actions\Roles\RemoveRolePjaxAction;
 use Brezgalov\RightsManager\Actions\Roles\RolesListPageAction;
 use Brezgalov\RightsManager\Actions\Roles\UpdateRoleAttributeAction;
 use yii\web\Controller;
@@ -20,6 +21,7 @@ class RolesController extends Controller
             'create' => CreateRolePageAction::class,
             'create-submit' => CreateRoleSubmitFormAction::class,
             'update' => UpdateRoleAttributeAction::class,
+            'delete' => RemoveRolePjaxAction::class,
         ];
     }
 }

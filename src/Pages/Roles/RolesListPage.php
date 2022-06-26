@@ -140,6 +140,9 @@ class RolesListPage extends Component implements IRenderFormatterDTO
                 'class' => ActionColumn::class,
                 'header' => '',
                 'template' => '{delete}',
+                'deleteOptions' => [
+                    'data-pjax' => '1',
+                ],
             ],
         ];
     }
