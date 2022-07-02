@@ -8,7 +8,7 @@ interface IConstantsStorageService
 {
     /**
      * @param ManagerInterface $authManager
-     * @return bool
+     * @return IConstantsStorageService
      */
     public function loadCurrentData(ManagerInterface $authManager);
 

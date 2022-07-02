@@ -28,11 +28,6 @@ use yii\widgets\ActiveForm;
     <?= $form->field($createRoleService, 'roleDescription')->label('Описание') ?>
 
     <div class="form-group">
-        <?= Html::checkbox('refreshConstants', $refreshConstants, ['id' => 'refresh-constants-checkbox']) ?>
-        <label class="form-label" for="refresh-constants-checkbox">Обновить константы</label>
-    </div>
-
-    <div class="form-group">
         <?= Html::submitButton('Создать', ['class' => 'btn btn-primary']) ?>
     </div>
 

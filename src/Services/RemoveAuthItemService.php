@@ -104,12 +104,7 @@ class RemoveAuthItemService extends Model implements IRegisterInputInterface
         /** @var Permission|Role $authItem */
         $authItem = $this->authManagerHelper->getAuthItem($this->authItemName, $this->mode);
         if (empty($authItem)) {
-            $this->addError('authItemName', 'Не удается найти '
-                . $this->authManagerHelper->getAuthItemErrorName($this->mode)
-                . ' '
-                . $this->authItemName
-            );
-            return false;
+            return true;
         }
 
         if (!$this->authManager->remove($authItem)) {

@@ -6,10 +6,13 @@ use Brezgalov\RightsManager\Formatters\RemoveAuthItemServicePjaxAdapter;
 use Brezgalov\RightsManager\Pages\Permissions\PermissionsListPage;
 use Brezgalov\RightsManager\Services\RemoveAuthItemService;
 use Brezgalov\RightsManager\Views\ViewContext;
+use Brezgalov\ApiHelpers\v2\Behaviors\Action\TransactionBehavior;
 use Brezgalov\ApiHelpers\v2\RenderAction;
 
 class RemovePermissionPjaxAction extends RenderAction
 {
+    const BEHAVIOR_KEY_TRANSACTION = 'transaction';
+
     /**
      * @var bool
      */
@@ -53,5 +56,15 @@ class RemovePermissionPjaxAction extends RenderAction
         ];
 
         parent::__construct($id, $controller, $config);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDefaultBehaviors()
+    {
+        return [
+            static::BEHAVIOR_KEY_TRANSACTION => TransactionBehavior::class,
+        ];
     }
 }

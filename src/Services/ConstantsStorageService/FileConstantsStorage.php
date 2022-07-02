@@ -49,7 +49,7 @@ class FileConstantsStorage extends Component implements IConstantsStorageService
 
     /**
      * @param ManagerInterface $authManager
-     * @return bool
+     * @return IConstantsStorageService
      */
     public function loadCurrentData(ManagerInterface $authManager)
     {
@@ -65,7 +65,7 @@ class FileConstantsStorage extends Component implements IConstantsStorageService
             $this->addPermissionConstant($permission->name);
         }
 
-        return true;
+        return $this;
     }
 
     /**

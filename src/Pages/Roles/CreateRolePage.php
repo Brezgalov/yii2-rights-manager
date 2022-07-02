@@ -19,11 +19,6 @@ class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInpu
     public $createRoleService;
 
     /**
-     * @var bool
-     */
-    public $refreshConstants = false;
-
-    /**
      * @var string
      */
     public $submitFormUrl = 'roles/create-submit';
@@ -47,8 +42,6 @@ class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInpu
      */
     public function registerInput(array $data = [])
     {
-        $this->refreshConstants = $data['refreshConstants'] ?? $this->refreshConstants;
-
         return $this->createRoleService->load($data);
     }
 
@@ -60,7 +53,6 @@ class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInpu
         return [
             'createRoleService' => $this->createRoleService,
             'submitFormUrl' => $this->submitFormUrl,
-            'refreshConstants' => (bool)$this->refreshConstants,
         ];
     }
 
@@ -76,7 +68,7 @@ class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInpu
      * @return $this
      * @throws \Exception
      */
-    public function submitRole(ConstantsConfigBuilderService $constantsBuilder = null)
+    public function submitRole()
     {
         if (!$this->createRoleService->validate()) {
             $this->addErrors($this->createRoleService->getErrors());
@@ -86,17 +78,6 @@ class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInpu
         if (!$this->createRoleService->createRole()) {
             $this->addErrors($this->createRoleService->getErrors());
             return $this;
-        }
-
-        if ($this->refreshConstants) {
-            if (empty($constantsBuilder)) {
-                $constantsBuilder = new ConstantsConfigBuilderService();
-            }
-
-            if (!$constantsBuilder->buildConfigFile()) {
-                $this->createRoleService->addError('roleName', 'Не удается обновить список констант');
-                return $this;
-            }
         }
 
         return $this;

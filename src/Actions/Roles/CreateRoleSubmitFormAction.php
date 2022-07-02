@@ -4,6 +4,7 @@ namespace Brezgalov\RightsManager\Actions\Roles;
 
 use Brezgalov\RightsManager\Pages\Roles\CreateRolePage;
 use Brezgalov\RightsManager\Views\ViewContext;
+use Brezgalov\ApiHelpers\v2\Behaviors\Action\TransactionBehavior;
 use Brezgalov\ApiHelpers\v2\SubmitRenderAction;
 
 class CreateRoleSubmitFormAction extends SubmitRenderAction
