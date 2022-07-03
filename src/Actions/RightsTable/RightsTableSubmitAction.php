@@ -4,6 +4,9 @@ namespace Brezgalov\RightsManager\Actions\RightsTable;
 
 use Brezgalov\RightsManager\Pages\RightsTablePage;
 use Brezgalov\RightsManager\Views\ViewContext;
+use Brezgalov\ApiHelpers\v2\Behaviors\Action\DelayedEventsBehavior;
+use Brezgalov\ApiHelpers\v2\Behaviors\Action\LoadServiceFromModuleBehavior;
+use Brezgalov\ApiHelpers\v2\Behaviors\Action\MutexBehavior;
 use Brezgalov\ApiHelpers\v2\Behaviors\Action\TransactionBehavior;
 use Brezgalov\ApiHelpers\v2\SubmitRenderAction;
 
@@ -47,7 +50,10 @@ class RightsTableSubmitAction extends SubmitRenderAction
     protected function getDefaultBehaviors()
     {
         return [
-            static::BEHAVIOR_KEY_TRANSACTION => TransactionBehavior::class,
+            SubmitRenderAction::BEHAVIOR_KEY_TRANSACTION => TransactionBehavior::class,
+            SubmitRenderAction::BEHAVIOR_KEY_MUTEX => MutexBehavior::class,
+            SubmitRenderAction::BEHAVIOR_KEY_DELAYED_EVENTS => DelayedEventsBehavior::class,
+            LoadServiceFromModuleBehavior::class,
         ];
     }
 }

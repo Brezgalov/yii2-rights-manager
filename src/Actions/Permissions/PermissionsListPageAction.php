@@ -4,6 +4,7 @@ namespace Brezgalov\RightsManager\Actions\Permissions;
 
 use Brezgalov\RightsManager\Pages\Permissions\PermissionsListPage;
 use Brezgalov\RightsManager\Views\ViewContext;
+use Brezgalov\ApiHelpers\v2\Behaviors\Action\LoadServiceFromModuleBehavior;
 use Brezgalov\ApiHelpers\v2\RenderAction;
 
 class PermissionsListPageAction extends RenderAction
@@ -32,4 +33,14 @@ class PermissionsListPageAction extends RenderAction
      * @var string
      */
     public $viewContext = ViewContext::class;
+
+    /**
+     * @return array
+     */
+    protected function getDefaultBehaviors()
+    {
+        return [
+            LoadServiceFromModuleBehavior::class
+        ];
+    }
 }

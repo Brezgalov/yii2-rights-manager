@@ -6,15 +6,18 @@ use Brezgalov\RightsManager\Dto\RightsTableDto;
 use Brezgalov\RightsManager\Factories\RightsTableFactory;
 use Brezgalov\RightsManager\Services\SubmitRightsTableService;
 use Brezgalov\ApiHelpers\v2\DTO\IRenderFormatterDTO;
-use Brezgalov\ApiHelpers\v2\IRegisterInputInterface;
+use Brezgalov\ApiHelpers\v2\ILoadFromModule;
+use Brezgalov\ApiHelpers\v2\IRegisterInput;
 use yii\base\Model;
-use yii\helpers\ArrayHelper;
+use yii\base\Module;
 use yii\rbac\ManagerInterface;
 
-class RightsTablePage extends Model implements IRenderFormatterDTO, IRegisterInputInterface
+class RightsTablePage extends Model implements IRenderFormatterDTO, IRegisterInput, ILoadFromModule
 {
     const PAGE_PREPARE_METHOD = 'preparePageData';
     const SUBMIT_TABLE_METHOD = 'submitTable';
+
+    public $test;
 
     /**
      * @var RightsTableDto
@@ -83,6 +86,11 @@ class RightsTablePage extends Model implements IRenderFormatterDTO, IRegisterInp
         $this->submitRightsService->registerInput($data);
 
         return true;
+    }
+
+    public function loadFromModule(Module $module)
+    {
+        $this->test = 123;
     }
 
     /**
