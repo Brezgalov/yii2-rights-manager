@@ -2,16 +2,19 @@
 
 namespace Brezgalov\RightsManager\Pages\Permissions;
 
+use Brezgalov\RightsManager\IGetRightsManagerSettings;
 use Brezgalov\ApiHelpers\v2\DTO\IRenderFormatterDTO;
+use Brezgalov\ApiHelpers\v2\ILoadFromModule;
 use kartik\grid\ActionColumn;
 use kartik\grid\EditableColumn;
 use yii\base\Model;
+use yii\base\Module;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Url;
 use yii\rbac\ManagerInterface;
 use yii\rbac\Permission;
 
-class PermissionsListPage extends Model implements IRenderFormatterDTO
+class PermissionsListPage extends Model implements IRenderFormatterDTO, ILoadFromModule
 {
     const PAGE_PREPARE_METHOD = 'preparePageData';
 
@@ -51,6 +54,11 @@ class PermissionsListPage extends Model implements IRenderFormatterDTO
     public $gridViewColumns;
 
     /**
+     * @var bool
+     */
+    public $updateConstantsBtnAvailable = true;
+
+    /**
      * PermissionsListPage constructor.
      * @param array $config
      */
@@ -68,6 +76,16 @@ class PermissionsListPage extends Model implements IRenderFormatterDTO
     }
 
     /**
+     * @param Module $module
+     */
+    public function loadFromModule(Module $module)
+    {
+        if ($module instanceof IGetRightsManagerSettings) {
+            $this->updateConstantsBtnAvailable = $module->useConstantsStorageService();
+        }
+    }
+
+    /**
      * @return ArrayDataProvider[]
      */
     public function getViewParams()
@@ -78,6 +96,7 @@ class PermissionsListPage extends Model implements IRenderFormatterDTO
             'gridLayout' => $this->gridLayout,
             'createPageRoute' => $this->createPageRoute,
             'updateConstantsRoute' => $this->updateConstantsRoute,
+            'updateConstantsBtnAvailable' => $this->updateConstantsBtnAvailable,
         ];
     }
 

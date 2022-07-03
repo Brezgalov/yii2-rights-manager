@@ -1,8 +1,8 @@
 <?php
 
-namespace Brezgalov\RightsManager\Factories;
+namespace admin\modules\RightsManager\Factories;
 
-use Brezgalov\RightsManager\Dto\RightsTableDto;
+use admin\modules\RightsManager\Dto\RightsTableDto;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;

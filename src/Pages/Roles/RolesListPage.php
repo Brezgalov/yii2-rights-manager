@@ -2,16 +2,19 @@
 
 namespace Brezgalov\RightsManager\Pages\Roles;
 
+use Brezgalov\RightsManager\IGetRightsManagerSettings;
 use Brezgalov\ApiHelpers\v2\DTO\IRenderFormatterDTO;
+use Brezgalov\ApiHelpers\v2\ILoadFromModule;
 use kartik\grid\ActionColumn;
 use kartik\grid\EditableColumn;
 use yii\base\Component;
+use yii\base\Module;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Url;
 use yii\rbac\ManagerInterface;
 use yii\rbac\Role;
 
-class RolesListPage extends Component implements IRenderFormatterDTO
+class RolesListPage extends Component implements IRenderFormatterDTO, ILoadFromModule
 {
     const PAGE_PREPARE_METHOD = 'preparePageData';
 
@@ -51,6 +54,11 @@ class RolesListPage extends Component implements IRenderFormatterDTO
     public $updateConstantsRoute = 'constants/update-storage/';
 
     /**
+     * @var bool
+     */
+    public $updateConstantsBtnAvailable = true;
+
+    /**
      * RolesListPage constructor.
      * @param array $config
      */
@@ -64,6 +72,16 @@ class RolesListPage extends Component implements IRenderFormatterDTO
 
         if (empty($this->rolesDataProvider)) {
             $this->rolesDataProvider = new ArrayDataProvider(['pagination' => false]);
+        }
+    }
+
+    /**
+     * @param Module $module
+     */
+    public function loadFromModule(Module $module)
+    {
+        if ($module instanceof IGetRightsManagerSettings) {
+            $this->updateConstantsBtnAvailable = $module->useConstantsStorageService();
         }
     }
 
@@ -88,6 +106,7 @@ class RolesListPage extends Component implements IRenderFormatterDTO
             'gridLayout' => $this->gridLayout,
             'createPageRoute' => $this->createPageRoute,
             'updateConstantsRoute' => $this->updateConstantsRoute,
+            'updateConstantsBtnAvailable' => $this->updateConstantsBtnAvailable,
         ];
     }
 

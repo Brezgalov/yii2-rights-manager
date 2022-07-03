@@ -2,13 +2,15 @@
 
 namespace Brezgalov\RightsManager\Services;
 
-use Brezgalov\RightsManager\RightsManagerModule;
+use Brezgalov\RightsManager\IGetRightsManagerSettings;
 use Brezgalov\RightsManager\Services\ConstantsStorageService\IConstantsStorageService;
+use Brezgalov\ApiHelpers\v2\ILoadFromModule;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
+use yii\base\Module;
 use yii\rbac\ManagerInterface;
 
-class RefreshConstantsStorageService extends Model
+class RefreshConstantsStorageService extends Model implements ILoadFromModule
 {
     const MAIN_METHOD = 'updateStorageService';
 
@@ -34,14 +36,15 @@ class RefreshConstantsStorageService extends Model
         if (empty($this->authManager)) {
             $this->authManager = \Yii::$app->authManager;
         }
+    }
 
-        if (empty($this->constantsStorage)) {
-            $constServiceConfig = RightsManagerModule::getConstantsStorageServiceConfig();
-            if (empty($constServiceConfig)) {
-                throw new InvalidConfigException('constantsStorageService should be set');
-            }
-
-            $this->constantsStorage = \Yii::createObject($constServiceConfig);
+    /**
+     * @param Module $module
+     */
+    public function loadFromModule(Module $module)
+    {
+        if ($module instanceof IGetRightsManagerSettings) {
+            $this->constantsStorage = $module->getConstantsStorageService();
         }
     }
 
@@ -50,6 +53,10 @@ class RefreshConstantsStorageService extends Model
      */
     public function updateStorageService()
     {
+        if (empty($this->constantsStorage)) {
+            return true;
+        }
+
         $this->constantsStorage->loadCurrentData($this->authManager);
 
         if (!$this->constantsStorage->flush()) {

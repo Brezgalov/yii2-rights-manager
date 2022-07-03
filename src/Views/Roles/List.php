@@ -13,6 +13,7 @@ use yii\widgets\Pjax;
  * @var string $gridLayout
  * @var string $createPageRoute
  * @var string $updateConstantsRoute
+ * @var bool $updateConstantsBtnAvailable
  */
 
 ?>
@@ -23,7 +24,9 @@ use yii\widgets\Pjax;
 <div>
     <p>
         <a href="<?= Url::toRoute($createPageRoute) ?>" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Новая роль</a>
-        <a href="<?= Url::toRoute($updateConstantsRoute) ?>" class="btn btn-default"><i class="glyphicon glyphicon-repeat"></i> Обновить список констант</a>
+        <?php if ($updateConstantsBtnAvailable): ?>
+            <a href="<?= Url::toRoute($updateConstantsRoute) ?>" class="btn btn-default"><i class="glyphicon glyphicon-repeat"></i> Обновить список констант</a>
+        <?php endif ?>
     </p>
 </div>
 

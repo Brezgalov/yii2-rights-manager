@@ -2,16 +2,16 @@
 
 namespace Brezgalov\RightsManager\Pages\Permissions;
 
-use Brezgalov\RightsManager\Services\ConstantsConfigBuilderService;
+use Brezgalov\RightsManager\IGetRightsManagerSettings;
 use Brezgalov\RightsManager\Services\CreatePermissionService;
 use Brezgalov\ApiHelpers\v2\DTO\IRenderFormatterDTO;
-use Brezgalov\ApiHelpers\v2\IRegisterInputInterface;
+use Brezgalov\ApiHelpers\v2\ILoadFromModule;
+use Brezgalov\ApiHelpers\v2\IRegisterInput;
 use yii\base\Model;
-use yii\db\Exception;
+use yii\base\Module;
 use yii\rbac\ManagerInterface;
-use yii\rbac\Rule;
 
-class CreatePermissionPage extends Model implements IRegisterInputInterface, IRenderFormatterDTO
+class CreatePermissionPage extends Model implements IRegisterInput, IRenderFormatterDTO, ILoadFromModule
 {
     const PAGE_PREPARE_METHOD = 'preparePageData';
     const SUBMIT_PERMISSION_METHOD = 'submitPermission';
@@ -30,11 +30,6 @@ class CreatePermissionPage extends Model implements IRegisterInputInterface, IRe
      * @var ManagerInterface
      */
     public $authManager;
-
-    /**
-     * @var bool
-     */
-    public $refreshConstants = false;
 
     /**
      * @var string[]
@@ -64,11 +59,16 @@ class CreatePermissionPage extends Model implements IRegisterInputInterface, IRe
      */
     public function registerInput(array $data = [])
     {
-        $this->refreshConstants = $data['refreshConstants'] ?? $this->refreshConstants;
-
         $this->createPermissionService->load($data);
 
         return true;
+    }
+
+    public function loadFromModule(Module $module)
+    {
+        if ($module instanceof IGetRightsManagerSettings) {
+            $this->createPermissionService->constantsStorage = $module->getConstantsStorageService();
+        }
     }
 
     /**
@@ -80,7 +80,6 @@ class CreatePermissionPage extends Model implements IRegisterInputInterface, IRe
             'createPermissionService' => $this->createPermissionService,
             'rulesList' => $this->rulesList,
             'submitFormUrl' => $this->submitFormUrl,
-            'refreshConstants' => (bool)$this->refreshConstants,
         ];
     }
 
@@ -97,10 +96,9 @@ class CreatePermissionPage extends Model implements IRegisterInputInterface, IRe
     }
 
     /**
-     * @param ConstantsConfigBuilderService|null $constantsBuilder
      * @return $this
      */
-    public function submitPermission(ConstantsConfigBuilderService $constantsBuilder = null)
+    public function submitPermission()
     {
         $this->preparePageData();
 
@@ -112,17 +110,6 @@ class CreatePermissionPage extends Model implements IRegisterInputInterface, IRe
         if (!$this->createPermissionService->createPermission()) {
             $this->addErrors($this->createPermissionService->getErrors());
             return $this;
-        }
-
-        if ($this->refreshConstants) {
-            if (empty($constantsBuilder)) {
-                $constantsBuilder = new ConstantsConfigBuilderService();
-            }
-
-            if (!$constantsBuilder->buildConfigFile()) {
-                $this->createPermissionService->addError('permissionName', 'Не удается обновить список констант');
-                return $this;
-            }
         }
 
         return $this;

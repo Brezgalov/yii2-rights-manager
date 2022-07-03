@@ -2,7 +2,6 @@
 
 namespace Brezgalov\RightsManager\Services\ConstantsStorageService;
 
-use Brezgalov\RightsManager\RightsManagerModule;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
@@ -37,10 +36,6 @@ class FileConstantsStorage extends Component implements IConstantsStorageService
     public function __construct($config = [])
     {
         parent::__construct($config);
-
-        if (empty($this->configPath)) {
-            $this->configPath = RightsManagerModule::getConstantsFileConfigPath();
-        }
 
         if (empty($this->configPath)) {
             throw new InvalidConfigException('configPath should be set');

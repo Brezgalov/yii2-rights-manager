@@ -3,23 +3,14 @@
 namespace Brezgalov\RightsManager;
 
 use Brezgalov\RightsManager\Services\ConstantsStorageService\FileConstantsStorage;
+use Brezgalov\RightsManager\Services\ConstantsStorageService\IConstantsStorageService;
 use Brezgalov\RightsManager\Views\ViewContext;
 use brezgalov\modules\Module;
 use yii\base\InvalidConfigException;
 use yii\base\ViewContextInterface;
 
-class RightsManagerModule extends Module
+class RightsManagerModule extends Module implements IGetRightsManagerSettings
 {
-    /**
-     * @var string
-     */
-    public static $constantsStaticConfigPath;
-
-    /**
-     * @var string|array
-     */
-    public static $constantsStorageServiceConfigStatic;
-
     /**
      * @var string
      */
@@ -36,37 +27,26 @@ class RightsManagerModule extends Module
     public $layout = 'Main';
 
     /**
-     * @var string
+     * @var bool
      */
-    public $constantsConfigPath;
+    public $useConstantsStorage = true;
 
     /**
      * class name or config
      * @var string|array
      */
-    public $constantsStorageService = FileConstantsStorage::class;
+    public $constantsStorageServiceSetup;
+
+    /**
+     * @var IConstantsStorageService
+     */
+    public $constantsStorageService;
 
     /**
      * setup for ViewContextInterface
      * @var string|array
      */
     public $viewContext = ViewContext::class;
-
-    /**
-     * @return string
-     */
-    public static function getConstantsFileConfigPath()
-    {
-        return static::$constantsStaticConfigPath;
-    }
-
-    /**
-     * @return array|string
-     */
-    public static function getConstantsStorageServiceConfig()
-    {
-        return static::$constantsStorageServiceConfigStatic;
-    }
 
     /**
      * init
@@ -77,9 +57,6 @@ class RightsManagerModule extends Module
         $viewContext = \Yii::createObject($this->viewContext);
         $this->viewPath = $viewContext->getViewPath();
 
-        static::$constantsStaticConfigPath = $this->constantsConfigPath;
-        static::$constantsStorageServiceConfigStatic = $this->constantsStorageService;
-
         if ($this->moduleLayoutPath) {
             $this->setLayoutPath($this->moduleLayoutPath);
         }
@@ -87,5 +64,33 @@ class RightsManagerModule extends Module
         $this->controllerNamespace = 'Brezgalov\RightsManager\Controllers';
 
         parent::init();
+    }
+
+    /**
+     * @return IConstantsStorageService|null
+     */
+    public function getConstantsStorageService()
+    {
+        if (!$this->useConstantsStorage) {
+            return null;
+        }
+
+        if (empty($this->constantsStorageService)) {
+            $this->constantsStorageService = \Yii::createObject($this->constantsStorageServiceSetup);
+
+            if (!($this->constantsStorageService instanceof IConstantsStorageService)) {
+                throw new InvalidConfigException('$constantsStorageService should be instance of ' . IConstantsStorageService::class);
+            }
+        }
+
+        return $this->constantsStorageService;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useConstantsStorageService()
+    {
+        return $this->useConstantsStorage;
     }
 }

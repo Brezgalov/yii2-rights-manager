@@ -2,10 +2,7 @@
 
 namespace Brezgalov\RightsManager\Services;
 
-use Brezgalov\RightsManager\RightsManagerModule;
-use Brezgalov\RightsManager\Services\ConstantsStorageService\FileConstantsStorage;
 use Brezgalov\RightsManager\Services\ConstantsStorageService\IConstantsStorageService;
-use Brezgalov\ApiHelpers\v2\IRegisterInputInterface;
 use yii\base\Model;
 use yii\rbac\ManagerInterface;
 
@@ -32,7 +29,7 @@ class CreatePermissionService extends Model
     public $ruleName;
 
     /**
-     * @var string|array|IConstantsStorageService|bool
+     * @var IConstantsStorageService
      */
     public $constantsStorage;
 
@@ -46,16 +43,6 @@ class CreatePermissionService extends Model
 
         if (empty($this->authManager)) {
             $this->authManager = \Yii::$app->authManager;
-        }
-
-        if (is_null($this->constantsStorage)) {
-            $storeConf = RightsManagerModule::getConstantsStorageServiceConfig();
-
-            if ($storeConf) {
-                $this->constantsStorage = \Yii::createObject($storeConf);
-            } else {
-                $this->constantsStorage = new FileConstantsStorage();
-            }
         }
     }
 
