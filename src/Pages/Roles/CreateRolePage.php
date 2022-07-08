@@ -2,15 +2,12 @@
 
 namespace Brezgalov\RightsManager\Pages\Roles;
 
-use Brezgalov\RightsManager\IGetRightsManagerSettings;
 use Brezgalov\RightsManager\Services\CreateRoleService;
 use Brezgalov\ApiHelpers\v2\DTO\IRenderFormatterDTO;
-use Brezgalov\ApiHelpers\v2\ILoadFromModule;
 use Brezgalov\ApiHelpers\v2\IRegisterInput;
 use yii\base\Model;
-use yii\base\Module;
 
-class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInput, ILoadFromModule
+class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInput
 {
     const PAGE_PREPARE_METHOD = 'preparePageData';
     const SUBMIT_ROLE_METHOD = 'submitRole';
@@ -35,16 +32,6 @@ class CreateRolePage extends Model implements IRenderFormatterDTO, IRegisterInpu
 
         if (empty($this->createRoleService)) {
             $this->createRoleService = new CreateRoleService();
-        }
-    }
-
-    /**
-     * @param Module $module
-     */
-    public function loadFromModule(Module $module)
-    {
-        if ($module instanceof IGetRightsManagerSettings) {
-            $this->createRoleService->constantsStorage = $module->getConstantsStorageService();
         }
     }
 

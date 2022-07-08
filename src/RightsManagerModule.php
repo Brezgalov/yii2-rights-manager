@@ -2,7 +2,7 @@
 
 namespace Brezgalov\RightsManager;
 
-use Brezgalov\RightsManager\Services\ConstantsStorageService\FileConstantsStorage;
+use Brezgalov\RightsManager\Behaviors\UpdateConstantsStorageBehavior;
 use Brezgalov\RightsManager\Services\ConstantsStorageService\IConstantsStorageService;
 use Brezgalov\RightsManager\Views\ViewContext;
 use brezgalov\modules\Module;
@@ -11,6 +11,8 @@ use yii\base\ViewContextInterface;
 
 class RightsManagerModule extends Module implements IGetRightsManagerSettings
 {
+    const EVENT_AUTH_ITEMS_LIST_UPDATED = 'authItemsListUpdated';
+
     /**
      * @var string
      */
@@ -40,7 +42,7 @@ class RightsManagerModule extends Module implements IGetRightsManagerSettings
     /**
      * @var IConstantsStorageService
      */
-    public $constantsStorageService;
+    protected $innerConstantsStorageService;
 
     /**
      * setup for ViewContextInterface
@@ -63,27 +65,32 @@ class RightsManagerModule extends Module implements IGetRightsManagerSettings
 
         $this->controllerNamespace = 'Brezgalov\RightsManager\Controllers';
 
+        if ($this->useConstantsStorage && empty($this->constantsStorageServiceSetup)) {
+            throw new InvalidConfigException("constantsStorageServiceSetup should be set");
+        }
+
+        if ($this->constantsStorageServiceSetup) {
+            $this->innerConstantsStorageService = \Yii::createObject($this->constantsStorageServiceSetup);
+        }
+
         parent::init();
     }
 
     /**
-     * @return IConstantsStorageService|null
+     * @param \yii\base\Application $app
      */
-    public function getConstantsStorageService()
+    public function bootstrap($app)
     {
-        if (!$this->useConstantsStorage) {
-            return null;
+        parent::bootstrap($app);
+
+        $behaviorsPrefix = $this->id ? "{$this->id}/" : "";
+
+        if ($this->useConstantsStorage) {
+            \Yii::$app->attachBehavior("{$behaviorsPrefix}updateConstantsBehavior", [
+                'class' => UpdateConstantsStorageBehavior::class,
+                'constantsStorage' => $this->getConstantsStorageService(),
+            ]);
         }
-
-        if (empty($this->constantsStorageService)) {
-            $this->constantsStorageService = \Yii::createObject($this->constantsStorageServiceSetup);
-
-            if (!($this->constantsStorageService instanceof IConstantsStorageService)) {
-                throw new InvalidConfigException('$constantsStorageService should be instance of ' . IConstantsStorageService::class);
-            }
-        }
-
-        return $this->constantsStorageService;
     }
 
     /**
@@ -92,5 +99,13 @@ class RightsManagerModule extends Module implements IGetRightsManagerSettings
     public function useConstantsStorageService()
     {
         return $this->useConstantsStorage;
+    }
+
+    /**
+     * @return IConstantsStorageService
+     */
+    public function getConstantsStorageService()
+    {
+        return $this->innerConstantsStorageService;
     }
 }

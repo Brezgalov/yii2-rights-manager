@@ -2,7 +2,7 @@
 
 namespace Brezgalov\RightsManager\Services;
 
-use Brezgalov\RightsManager\Services\ConstantsStorageService\IConstantsStorageService;
+use Brezgalov\RightsManager\RightsManagerModule;
 use yii\base\Model;
 use yii\rbac\ManagerInterface;
 
@@ -29,11 +29,6 @@ class CreatePermissionService extends Model
     public $ruleName;
 
     /**
-     * @var IConstantsStorageService
-     */
-    public $constantsStorage;
-
-    /**
      * CreatePermissionService constructor.
      * @param array $config
      */
@@ -57,6 +52,10 @@ class CreatePermissionService extends Model
         ];
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function createPermission()
     {
         if (!$this->validate()) {
@@ -81,13 +80,7 @@ class CreatePermissionService extends Model
             return false;
         }
 
-        if ($this->constantsStorage) {
-            $this->constantsStorage->loadCurrentData($this->authManager);
-            if (!$this->constantsStorage->flush()) {
-                $this->addError('roleName', 'Не удается записать RBAC константы');
-                return false;
-            }
-        }
+        \Yii::$app->trigger(RightsManagerModule::EVENT_AUTH_ITEMS_LIST_UPDATED);
 
         return true;
     }
