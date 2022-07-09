@@ -35,5 +35,8 @@
     "psr-4": {
       "Brezgalov\\RightsManager\\": "src/"
     }
+  },
+  "scripts": {
+    "test": "./vendor/bin/phpunit --verbose --bootstrap tests/bootstrap.php tests"
   }
 }

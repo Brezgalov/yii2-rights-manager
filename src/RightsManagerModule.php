@@ -6,12 +6,15 @@ use Brezgalov\RightsManager\Behaviors\UpdateConstantsStorageBehavior;
 use Brezgalov\RightsManager\Services\ConstantsStorageService\IConstantsStorageService;
 use Brezgalov\RightsManager\Views\ViewContext;
 use brezgalov\modules\Module;
+use yii\base\Application;
 use yii\base\InvalidConfigException;
 use yii\base\ViewContextInterface;
 
 class RightsManagerModule extends Module implements IGetRightsManagerSettings
 {
     const EVENT_AUTH_ITEMS_LIST_UPDATED = 'authItemsListUpdated';
+
+    const UPDATE_CONSTANTS_BEHAVIOR_NAME = 'updateConstantsBehavior';
 
     /**
      * @var string
@@ -51,6 +54,17 @@ class RightsManagerModule extends Module implements IGetRightsManagerSettings
     public $viewContext = ViewContext::class;
 
     /**
+     * @var string
+     */
+    public $controllerNamespace = 'Brezgalov\RightsManager\Controllers';
+
+    /**
+     * Set to false to disable prefixes
+     * @var bool|string|null
+     */
+    public $behaviorsPrefix;
+
+    /**
      * init
      */
     public function init()
@@ -59,11 +73,13 @@ class RightsManagerModule extends Module implements IGetRightsManagerSettings
         $viewContext = \Yii::createObject($this->viewContext);
         $this->viewPath = $viewContext->getViewPath();
 
+        if (is_null($this->behaviorsPrefix)) {
+            $this->behaviorsPrefix = $this->id ? "{$this->id}/" : "";
+        }
+
         if ($this->moduleLayoutPath) {
             $this->setLayoutPath($this->moduleLayoutPath);
         }
-
-        $this->controllerNamespace = 'Brezgalov\RightsManager\Controllers';
 
         if ($this->useConstantsStorage && empty($this->constantsStorageServiceSetup)) {
             throw new InvalidConfigException("constantsStorageServiceSetup should be set");
@@ -83,13 +99,8 @@ class RightsManagerModule extends Module implements IGetRightsManagerSettings
     {
         parent::bootstrap($app);
 
-        $behaviorsPrefix = $this->id ? "{$this->id}/" : "";
-
         if ($this->useConstantsStorage) {
-            \Yii::$app->attachBehavior("{$behaviorsPrefix}updateConstantsBehavior", [
-                'class' => UpdateConstantsStorageBehavior::class,
-                'constantsStorage' => $this->getConstantsStorageService(),
-            ]);
+
         }
     }
 
@@ -107,5 +118,45 @@ class RightsManagerModule extends Module implements IGetRightsManagerSettings
     public function getConstantsStorageService()
     {
         return $this->innerConstantsStorageService;
+    }
+
+    /**
+     * @param Application|null $app
+     */
+    public function enableConstantsStorage(Application $app = null)
+    {
+        if (empty($app)) {
+            $app = \Yii::$app;
+        }
+
+        $this->useConstantsStorage = true;
+
+        $app->attachBehavior($this->getBehaviorName(static::UPDATE_CONSTANTS_BEHAVIOR_NAME), [
+            'class' => UpdateConstantsStorageBehavior::class,
+            'constantsStorage' => $this->getConstantsStorageService(),
+        ]);
+    }
+
+    /**
+     * @param Application|null $app
+     */
+    public function disableConstantsStorage(Application $app = null)
+    {
+        if (empty($app)) {
+            $app = \Yii::$app;
+        }
+
+        $this->useConstantsStorage = false;
+        $app->detachBehavior(
+            $this->getBehaviorName(static::UPDATE_CONSTANTS_BEHAVIOR_NAME)
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getBehaviorName($name)
+    {
+        return "{$this->behaviorsPrefix}{$name}";
     }
 }

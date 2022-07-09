@@ -20,6 +20,8 @@ $touchFiles = [
     DIR_GENERATED . '/rbac_constants.php',
 ];
 
-foreach ($touchFiles as $filePath) {
-    touch($filePath);
-}
+//foreach ($touchFiles as $filePath) {
+//    if (!is_file($filePath)) {
+//        file_put_contents($filePath, "<?php return [];");
+//    }
+//}
